@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Satellite heights</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+// ****** DEFINE VARIABLES ******
+
+  // GPS satellites are also called Navigation Stars, or NavStars for short
+  var navStarHeight = 20000,
+    satelliteHeight = 700,
+    earth = 0,
+    heights = [earth, navStarHeight, satelliteHeight];
+  // in order to know how much higher GPS satellites are than normal satellites
+  var ratio = navStarHeight / satelliteHeight;
+  // setting the size of the SVG element
+  var width = "2950px",
+      height = "500px";
+
+
+// ****** CREATE ELEMENTS ******
+
+  d3.select("body")
+    .append("h1")
+    .attr("class", "title")
+    .text("Different Distances: Satell-heights");
+
+  d3.select("body")
+    .append("p")
+    .attr("class", "intro")
+    .text("While most satellites orbit Earth at around 700km above sea level, the GPS System's satellites operate on stunning 20.000km above sea level! This is stunning, I wanted to see howe far does that far really mean. Please scroll to the right to see the example GPS satellite. It's a lonely universe out there...!");
+
+  var svgContainer = d3.select("body")
+    .append("svg")
+    .attr("class", "nav-star")
+    .style("border", "1px solid black")
+    .style("width", width)
+    .style("height", height);
+
+  var satellites = svgContainer.selectAll("circle")
+                                .data(heights)
+                                .enter()
+                                .append("circle");
+
+  var satelliteAttrs = satellites.attr("cx", function (d) {
+                                    // set a good position for display
+                                    var distance = 100;
+                                    // the navStar will be displayed in the appropriate ratio distance
+                                    if  (d === navStarHeight) { distance = distance * ratio;
+                                    } else if (d === satelliteHeight) { distance = distance;
+                                      // only show a bit of earth's curvature
+                                    } else if (d === earth) { distance = -970; }
+                                    return distance;
+                                  })
+                                  .attr("cy", 200)
+                                  .attr("r", function (d) {
+                                    // set the size of the satellites
+                                    var radius = 10;
+                                    // make earth (much) bigger
+                                    if (d === earth) { radius = radius ** 3;}
+                                    return radius;
+                                  })
+                                  .style("fill", function (d) {
+                                    // make earth bluer
+                                    var color = "gray";
+                                    if (d === earth) { color = "blue";}
+                                    return color;
+                                  });
+</script>
+</body>
+</html>
